@@ -3,6 +3,10 @@ import java.awt.image.BufferedImage
 import java.io.File
 import javax.imageio.ImageIO
 
+import akka.actor._
+
+import scala.collection.mutable.ArrayBuffer
+
 sealed trait State
 
 case object Menu extends State
@@ -55,7 +59,7 @@ class Game extends LoggingFSM[State, Data] {
 
   def saveWorld(heights: ArrayBuffer[ArrayBuffer[Int]]) = {
     val image = new BufferedImage(1025, 1025, BufferedImage.TYPE_INT_RGB)
-    val colorInterpolation = new ColorInterpolation(heights.flatten.min, heights.flatten.max, ColorSchemes.SevenColorBlindFriendly)
+    val colorInterpolation = new ColorInterpolation(heights.flatten.min, heights.flatten.max, ColorSchemes.NineClassSpectral)
 
     heights.toArray.zipWithIndex.foreach { case (row, i) =>
       row.toArray.zipWithIndex.foreach { case (cell, j) =>
