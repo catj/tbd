@@ -1,4 +1,4 @@
-
+import akka.actor.{Actor, Props}
 
 object WorldActor {
   def props: Props = Props(new WorldActor)

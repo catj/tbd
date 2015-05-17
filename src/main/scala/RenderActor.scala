@@ -1,4 +1,10 @@
 import ScalaScreen._
+import akka.actor.{Actor, Props}
+import com.googlecode.lanterna.screen.{Screen, TerminalScreen}
+import com.googlecode.lanterna.terminal.{ResizeListener, Terminal}
+import com.googlecode.lanterna.{TerminalPosition, TerminalSize}
+
+import scala.collection.mutable.ArrayBuffer
 
 object RenderActor {
   def props: Props = Props(new RenderActor)

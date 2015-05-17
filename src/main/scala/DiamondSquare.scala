@@ -1,4 +1,5 @@
-
+import scala.collection.mutable.ArrayBuffer
+import scala.util.Random
 
 object DiamondSquare {
   def generateHeightMap(size: Int, seed: Long = 0): ArrayBuffer[ArrayBuffer[Int]] = {

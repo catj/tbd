@@ -1,4 +1,6 @@
-
+import com.googlecode.lanterna.TextColor.RGB
+import com.googlecode.lanterna.screen.Screen
+import com.googlecode.lanterna.{TerminalPosition, TerminalSize, TextCharacter, TextColor}
 
 
 object ScalaScreen {
