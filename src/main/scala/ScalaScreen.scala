@@ -1,6 +1,4 @@
-import com.googlecode.lanterna.TextColor.RGB
-import com.googlecode.lanterna._
-import com.googlecode.lanterna.screen.Screen
+
 
 
 object ScalaScreen {
@@ -10,11 +8,10 @@ object ScalaScreen {
     }
   }
 
-  def setMapString(screen: Screen, position: TerminalPosition, size: TerminalSize, heights: Array[Int]): Unit = {
-    val colorInterpolation = new ColorInterpolation(heights.min, heights.max, ColorSchemes.FiveColorBlindFriendly)
+  def setMapString(screen: Screen, position: TerminalPosition, size: TerminalSize, heights: Array[Int], colorInterpolation: ColorInterpolation): Unit = {
     for ((height, i) <- heights.zipWithIndex) {
       val color = colorInterpolation.interpolate(height)
-      screen.setCharacter(position.withRelativeColumn(i), new TextCharacter('#', new RGB(color.red, color.green, color.blue) , TextColor.ANSI.BLACK, SGR.BOLD))
+      screen.setCharacter(position.withRelativeColumn(i), new TextCharacter('#', new RGB(color.red, color.green, color.blue), TextColor.ANSI.BLACK))
     }
   }
 

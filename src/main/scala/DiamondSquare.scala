@@ -1,5 +1,4 @@
-import scala.collection.mutable.ArrayBuffer
-import scala.util.Random
+
 
 object DiamondSquare {
   def generateHeightMap(size: Int, seed: Long = 0): ArrayBuffer[ArrayBuffer[Int]] = {
@@ -13,7 +12,7 @@ object DiamondSquare {
 
 class DiamondSquare(size: Int, seed: Long) {
   val random = new Random(seed)
-  val map = ArrayBuffer.fill[Int](size, size)(100)
+  val map = ArrayBuffer.fill[Int](size, size)(1000)
   val sizeMinusOne: Int = size - 1
 
   def square(x: Int, y: Int, sideLength: Int, halfSide: Int, altitude: Int) = {
@@ -40,7 +39,7 @@ class DiamondSquare(size: Int, seed: Long) {
   }
 
   def diamondSquare() = {
-    var altitude = 50
+    var altitude = 500
     for (sideLength <- Stream.iterate(sizeMinusOne)(_ / 2).takeWhile(_ >= 2)) {
       val halfSide = sideLength / 2
       for (x <- 0 until sizeMinusOne by sideLength) {

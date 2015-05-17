@@ -1,10 +1,4 @@
 import ScalaScreen._
-import akka.actor.{Actor, Props}
-import com.googlecode.lanterna.screen.{Screen, TerminalScreen}
-import com.googlecode.lanterna.terminal.{ResizeListener, Terminal}
-import com.googlecode.lanterna.{TerminalPosition, TerminalSize}
-
-import scala.collection.mutable.ArrayBuffer
 
 object RenderActor {
   def props: Props = Props(new RenderActor)
@@ -26,8 +20,9 @@ class RenderActor extends Actor {
     case WorldState(heightMap) =>
       val terminalSize = resize(screen)
       state = Option(heightMap)
+      val colorInterpolation = new ColorInterpolation(heightMap.flatten.min, heightMap.flatten.max, ColorSchemes.SevenColorBlindFriendly)
       heightMap.toArray.zipWithIndex.foreach { case (row, i) =>
-        setMapString(screen, new TerminalPosition(0, i), terminalSize, row.toArray)
+        setMapString(screen, new TerminalPosition(0, i), terminalSize, row.toArray, colorInterpolation)
       }
       screen.refresh()
     case "redraw" =>
