@@ -11,7 +11,7 @@ object RenderActor {
 }
 
 class RenderActor extends Actor {
-  private var state: Option[ArrayBuffer[ArrayBuffer[Int]]] = None
+  private var state: Option[ArrayBuffer[ArrayBuffer[Short]]] = None
   val terminal = ScalaTerminal.terminal
   val screen: Screen = new TerminalScreen(terminal)
   val listener: ResizeListener = new ResizeListener {

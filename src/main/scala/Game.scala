@@ -23,7 +23,7 @@ sealed trait Data
 
 case object Uninitialized extends Data
 
-case class WorldState(heightMap: ArrayBuffer[ArrayBuffer[Int]]) extends Data
+case class WorldState(heightMap: ArrayBuffer[ArrayBuffer[Short]]) extends Data
 
 case class StartMenu(ref: ActorRef)
 
@@ -31,7 +31,7 @@ case class GenerateWorld(ref: ActorRef)
 
 case class RenderWorld(ref: ActorRef)
 
-case class SaveWorld(heightMap: ArrayBuffer[ArrayBuffer[Int]])
+case class SaveWorld(heightMap: ArrayBuffer[ArrayBuffer[Short]], seed: Long)
 
 case class Exit(ref: ActorRef)
 
@@ -57,7 +57,7 @@ class Game extends LoggingFSM[State, Data] {
     case Event(StartMenu(ref), Uninitialized) => goto(Generation)
   }
 
-  def saveWorld(heights: ArrayBuffer[ArrayBuffer[Int]]) = {
+  def saveWorld(heights: ArrayBuffer[ArrayBuffer[Short]], seed: Long) = {
     val image = new BufferedImage(1025, 1025, BufferedImage.TYPE_INT_RGB)
     val colorInterpolation = new ColorInterpolation(heights.flatten.min, heights.flatten.max, ColorSchemes.NineClassSpectral)
 
@@ -69,7 +69,7 @@ class Game extends LoggingFSM[State, Data] {
       }
     }
     image.flush()
-    ImageIO.write(image, "BMP", new File("file.bmp"))
+    ImageIO.write(image, "BMP", new File("file" + seed + ".bmp"))
 
   }
 
@@ -78,8 +78,8 @@ class Game extends LoggingFSM[State, Data] {
       worldActorRef ! "start"
       stay()
 
-    case Event(SaveWorld(heightMap), Uninitialized) =>
-      saveWorld(heightMap)
+    case Event(SaveWorld(heightMap, seed), Uninitialized) =>
+      saveWorld(heightMap, seed)
       goto(Render) using WorldState(heightMap = heightMap)
   }
 

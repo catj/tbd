@@ -82,7 +82,7 @@ case class NineClassInterpolation(one: RGBColor, two: RGBColor, three: RGBColor,
   override def getNumberOfBuckets: Int = 8
 }
 
-class ColorInterpolation(min: Int, max: Int, interpolationClass: InterpolationClass) {
+class ColorInterpolation(min: Short, max: Short, interpolationClass: InterpolationClass) {
   val spread = max - min
   val step: Double = spread / interpolationClass.getNumberOfBuckets.toDouble
 
