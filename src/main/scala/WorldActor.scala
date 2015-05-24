@@ -17,6 +17,7 @@ class WorldActor extends Actor {
     case "start" =>
       val seed = System.currentTimeMillis()
       val heightMap = DiamondSquare.generateHeightMap(1025, seed)
+
       val temperatureMap = generateTemperatureMap(heightMap)
       sender ! SaveWorld(heightMap, seed)
   }
