@@ -23,7 +23,7 @@ sealed trait Data
 
 case object Uninitialized extends Data
 
-case class WorldState(heightMap: ArrayBuffer[ArrayBuffer[Short]]) extends Data
+case class WorldState(heightMap: ArrayBuffer[ArrayBuffer[Short]], temperatureMap: ArrayBuffer[ArrayBuffer[Short]]) extends Data
 
 case class StartMenu(ref: ActorRef)
 
@@ -31,7 +31,7 @@ case class GenerateWorld(ref: ActorRef)
 
 case class RenderWorld(ref: ActorRef)
 
-case class SaveWorld(heightMap: ArrayBuffer[ArrayBuffer[Short]], seed: Long)
+case class SaveWorld(heightMap: ArrayBuffer[ArrayBuffer[Short]], temperatureMap: ArrayBuffer[ArrayBuffer[Short]], seed: Long)
 
 case class Exit(ref: ActorRef)
 
@@ -48,7 +48,7 @@ object Game extends App {
 
 class Game extends LoggingFSM[State, Data] {
 
-  val WorldSize = 65
+  val WorldSize = 33
   val renderActorRef = context.actorOf(RenderActor.props, name = "renderActor")
   val worldActorRef = context.actorOf(WorldActor.props(WorldSize), name = "worldActor")
 
@@ -58,7 +58,7 @@ class Game extends LoggingFSM[State, Data] {
     case Event(StartMenu(ref), Uninitialized) => goto(Generation)
   }
 
-  def saveWorld(heights: ArrayBuffer[ArrayBuffer[Short]], seed: Long) = {
+  def saveWorld(heights: ArrayBuffer[ArrayBuffer[Short]], temperatureMap: ArrayBuffer[ArrayBuffer[Short]], seed: Long) = {
   //  val image = new BufferedImage(65, 65, BufferedImage.TYPE_INT_RGB)
   //  val colorInterpolation = new ColorInterpolation(heights.flatten.min, heights.flatten.max, ColorSchemes.NineClassSpectral)
 
@@ -79,16 +79,16 @@ class Game extends LoggingFSM[State, Data] {
       worldActorRef ! "start"
       stay()
 
-    case Event(SaveWorld(heightMap, seed), Uninitialized) =>
-      saveWorld(heightMap, seed)
-      goto(Render) using WorldState(heightMap = heightMap)
+    case Event(SaveWorld(heightMap, temperatureMap, seed), Uninitialized) =>
+      saveWorld(heightMap, temperatureMap, seed)
+      goto(Render) using WorldState(heightMap = heightMap, temperatureMap = temperatureMap)
   }
 
   when(Render) {
-    case Event(RenderWorld(ref), WorldState(heightMap)) =>
+    case Event(RenderWorld(ref), WorldState(heightMap, temperatureMap)) =>
       renderActorRef ! stateData
       stay()
-    case Event("redraw", WorldState(heightMap)) =>
+    case Event("redraw", WorldState(heightMap, temperatureMap)) =>
       renderActorRef ! stateData
       stay()
   }

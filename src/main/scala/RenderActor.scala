@@ -11,7 +11,8 @@ object RenderActor {
 }
 
 class RenderActor extends Actor {
-  private var state: Option[ArrayBuffer[ArrayBuffer[Short]]] = None
+  private var heightState: Option[ArrayBuffer[ArrayBuffer[Short]]] = None
+  private var temperatureState: Option[ArrayBuffer[ArrayBuffer[Short]]] = None
   val terminal = ScalaTerminal.terminal
   val screen: Screen = new TerminalScreen(terminal)
   val listener: ResizeListener = new ResizeListener {
@@ -23,21 +24,26 @@ class RenderActor extends Actor {
   screen.startScreen()
 
   override def receive: Receive = {
-    case WorldState(heightMap) =>
+    case WorldState(heightMap, temperatureMap) =>
       val terminalSize = resize(screen)
-      state = Option(heightMap)
-      val colorInterpolation = new ColorInterpolation(heightMap.flatten.min, heightMap.flatten.max, ColorSchemes.NineClassSpectral)
+      heightState = Option(heightMap)
+      temperatureState = Option(temperatureMap)
+      val colorInterpolation = new ColorInterpolation(heightMap.flatten.min, heightMap.flatten.max,
+        ColorSchemes.NineClassSpectralRev)
+
       heightMap.toArray.zipWithIndex.foreach { case (row, i) =>
-        i match {
-          case x: Int if x <= (heightMap.size / 2) =>
-            setMapString(screen, new TerminalPosition(0, i), terminalSize, row.toArray, colorInterpolation)
-          case x: Int if x > (heightMap.size / 2) =>
-            setMapString(screen, new TerminalPosition(row.length + 2, i - (row.length / 2) - 1 ), terminalSize, row.toArray, colorInterpolation)
-        }
+        setMapString(screen, new TerminalPosition(0, i), terminalSize, row.toArray, colorInterpolation)
+        setLandMapString(screen, new TerminalPosition(heightMap.size + 1, i), terminalSize, row.toArray)
       }
+
+      val tempColorInterpolation = new ColorInterpolation(-60, 60, ColorSchemes.NineClassSpectralRev)
+      temperatureMap.toArray.zipWithIndex.foreach { case (row, i) =>
+        setMapString(screen, new TerminalPosition(heightMap.size * 2 + 2, i), terminalSize, row.toArray, tempColorInterpolation)
+      }
+
       screen.refresh()
     case "redraw" =>
-      self ! WorldState(state.get)
+      self ! WorldState(heightState.get, temperatureState.get)
   }
 
   override def postStop() = {

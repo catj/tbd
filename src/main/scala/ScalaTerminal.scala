@@ -3,6 +3,6 @@ import com.googlecode.lanterna.terminal.{DefaultTerminalFactory, Terminal}
 
 object ScalaTerminal {
   def terminal: Terminal = new DefaultTerminalFactory()
-    .setSwingTerminalFrameAutoCloseTrigger(SwingTerminalFrame.AutoCloseTrigger.CloseOnEscape)
+    .setSwingTerminalFrameAutoCloseTrigger(SwingTerminalFrame.AutoCloseTrigger.CloseOnExitPrivateMode)
     .createTerminal()
 }

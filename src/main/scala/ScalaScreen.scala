@@ -17,6 +17,17 @@ object ScalaScreen {
     }
   }
 
+  def setLandMapString(screen: Screen, position: TerminalPosition, size: TerminalSize, heights: Array[Short]): Unit = {
+    for ((height, i) <- heights.zipWithIndex) {
+      height match {
+        case h: Short if h > 0 =>
+          screen.setCharacter(position.withRelativeColumn(i), new TextCharacter('\u00A7', new RGB(55, 255, 55), TextColor.ANSI.BLACK))
+        case _ =>
+          screen.setCharacter(position.withRelativeColumn(i), new TextCharacter('\u00A7', new RGB(55, 55, 255), TextColor.ANSI.BLACK))
+      }
+    }
+  }
+
   def resize(screen: Screen): TerminalSize = {
     val resize = screen.doResizeIfNecessary()
     if (resize != null) {
