@@ -26,12 +26,22 @@ class RenderActor extends Actor {
     case WorldState(heightMap) =>
       val terminalSize = resize(screen)
       state = Option(heightMap)
-      val colorInterpolation = new ColorInterpolation(heightMap.flatten.min, heightMap.flatten.max, ColorSchemes.SevenColorBlindFriendly)
+      val colorInterpolation = new ColorInterpolation(heightMap.flatten.min, heightMap.flatten.max, ColorSchemes.NineClassSpectral)
       heightMap.toArray.zipWithIndex.foreach { case (row, i) =>
-        setMapString(screen, new TerminalPosition(0, i), terminalSize, row.toArray, colorInterpolation)
+        i match {
+          case x: Int if x <= (heightMap.size / 2) =>
+            setMapString(screen, new TerminalPosition(0, i), terminalSize, row.toArray, colorInterpolation)
+          case x: Int if x > (heightMap.size / 2) =>
+            setMapString(screen, new TerminalPosition(row.length + 2, i - (row.length / 2) - 1 ), terminalSize, row.toArray, colorInterpolation)
+        }
       }
       screen.refresh()
     case "redraw" =>
       self ! WorldState(state.get)
+  }
+
+  override def postStop() = {
+    screen.stopScreen()
+    terminal.exitPrivateMode()
   }
 }

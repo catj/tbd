@@ -13,7 +13,7 @@ object ScalaScreen {
   def setMapString(screen: Screen, position: TerminalPosition, size: TerminalSize, heights: Array[Short], colorInterpolation: ColorInterpolation): Unit = {
     for ((height, i) <- heights.zipWithIndex) {
       val color = colorInterpolation.interpolate(height)
-      screen.setCharacter(position.withRelativeColumn(i), new TextCharacter('#', new RGB(color.red, color.green, color.blue), TextColor.ANSI.BLACK))
+      screen.setCharacter(position.withRelativeColumn(i), new TextCharacter('\u00A7', new RGB(color.red, color.green, color.blue), TextColor.ANSI.BLACK))
     }
   }
 

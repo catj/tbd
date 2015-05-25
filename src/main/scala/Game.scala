@@ -48,8 +48,9 @@ object Game extends App {
 
 class Game extends LoggingFSM[State, Data] {
 
+  val WorldSize = 65
   val renderActorRef = context.actorOf(RenderActor.props, name = "renderActor")
-  val worldActorRef = context.actorOf(WorldActor.props, name = "worldActor")
+  val worldActorRef = context.actorOf(WorldActor.props(WorldSize), name = "worldActor")
 
   startWith(Menu, Uninitialized)
 
@@ -58,18 +59,18 @@ class Game extends LoggingFSM[State, Data] {
   }
 
   def saveWorld(heights: ArrayBuffer[ArrayBuffer[Short]], seed: Long) = {
-    val image = new BufferedImage(1025, 1025, BufferedImage.TYPE_INT_RGB)
-    val colorInterpolation = new ColorInterpolation(heights.flatten.min, heights.flatten.max, ColorSchemes.NineClassSpectral)
+  //  val image = new BufferedImage(65, 65, BufferedImage.TYPE_INT_RGB)
+  //  val colorInterpolation = new ColorInterpolation(heights.flatten.min, heights.flatten.max, ColorSchemes.NineClassSpectral)
 
-    heights.toArray.zipWithIndex.foreach { case (row, i) =>
-      row.toArray.zipWithIndex.foreach { case (cell, j) =>
-        val rgbColor = colorInterpolation.interpolate(cell)
-        val awtColor = new Color(rgbColor.red, rgbColor.green, rgbColor.blue)
-        image.setRGB(i, j, awtColor.getRGB)
-      }
-    }
-    image.flush()
-    ImageIO.write(image, "BMP", new File("file" + seed + ".bmp"))
+  //  heights.toArray.zipWithIndex.foreach { case (row, i) =>
+   //   row.toArray.zipWithIndex.foreach { case (cell, j) =>
+   //     val rgbColor = colorInterpolation.interpolate(cell)
+    //    val awtColor = new Color(rgbColor.red, rgbColor.green, rgbColor.blue)
+     //   image.setRGB(i, j, awtColor.getRGB)
+   //   }
+   // }
+   // image.flush()
+  //  ImageIO.write(image, "BMP", new File("file" + seed + ".bmp"))
 
   }
 
